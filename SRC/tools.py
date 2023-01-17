@@ -12,12 +12,22 @@ def show(string):
   namespace = dict((k,v) for (k,v) in namespace.items() if k[0] != '_')
   for exp in string.split(';'):
     exp = exp.strip(); head, tail = exp[:1], exp[-1:]
-    if exp == '': print(); continue
     head, exp = (head, exp[1:]) if head == '*' else ('', exp) 
     tail, exp = (tail, exp[:-1]) if tail == '#' else ('', exp)
-    val = eval(exp, namespace); exp = head + exp # ◄━► • ▲▼
-    print(exp, '━►\n' if tail else '━► ', end='')
+    val = eval(exp, namespace) if exp else ''
+    if exp: print(head+exp if head else exp, '=\n' if tail else '= ', end='')
     print(*val) if head else print(val)
+# --------------------------------------------------------------------------------------------------
+def view(image, mode=None, clamp=None):
+  """display image (either numpy array or PIL image), with optional image conversion or clamping"""
+  import numpy as np; import PIL.Image as pim
+  assert isinstance(image, (np.ndarray, pim.Image)), 'wrong data for image'
+  assert isinstance(clamp, (type(None), tuple)), 'wrong range for clamping'
+  if isinstance(image, pim.Image): image = np.array(image)
+  if not clamp: hi = image.max(); clamp = (0, hi if hi else 1)
+  lo, hi = clamp; image = (np.clip(image, lo, hi) - lo) / (hi - lo) * 255
+  image = pim.fromarray(image.astype('u1'))
+  display(image.convert(mode) if mode else image)
 # --------------------------------------------------------------------------------------------------
 def load(filename, split=True, strip=True, clean=True, comment='#', encoding='utf8'):
   """load content of provided text file and perform split/strip/clean tasks
