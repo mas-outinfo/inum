@@ -15,10 +15,10 @@ def show(string):
     head, exp = (head, exp[1:]) if head == '*' else ('', exp) 
     tail, exp = (tail, exp[:-1]) if tail == '#' else ('', exp)
     val = eval(exp, namespace) if exp else ''
-    if exp: print(head+exp if head else exp, '=\n' if tail else '= ', end='')
+    if exp: print(head+exp if head else exp, '━►\n' if tail else '━► ', end='')
     print(*val) if head else print(val)
 # --------------------------------------------------------------------------------------------------
-def view(image, mode=None, clamp=None):
+def view(image, mode=None, clamp=None, file=None):
   """display image (either numpy array or PIL image), with optional image conversion or clamping"""
   import numpy as np; import PIL.Image as pim
   assert isinstance(image, (np.ndarray, pim.Image)), 'wrong data for image'
@@ -27,7 +27,9 @@ def view(image, mode=None, clamp=None):
   if not clamp: hi = image.max(); clamp = (0, hi if hi else 1)
   lo, hi = clamp; image = (np.clip(image, lo, hi) - lo) / (hi - lo) * 255
   image = pim.fromarray(image.astype('u1'))
-  display(image.convert(mode) if mode else image)
+  if mode: image = image.convert(mode) # optional: convert image to provided 'mode'
+  if file: image.save(file) # optional: save image to provided 'file'
+  display(image)
 # --------------------------------------------------------------------------------------------------
 def load(filename, split=True, strip=True, clean=True, comment='#', encoding='utf8'):
   """load content of provided text file and perform split/strip/clean tasks
