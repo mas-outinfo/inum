@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Wings 3D
+Comment=
+Type=Application
+Exec=/usr/bin/wings3d -noshell -noinput -detached
+Path=$HOME
+Terminal=false
+Icon=/usr/share/icons/wings3d.xpm
+Categories=Graphics;3DGraphics;
+StartupNotify=false
